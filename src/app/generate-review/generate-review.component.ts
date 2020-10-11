@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {RestService} from '../shared/rest.service';
+import {RestService} from '../_shared/rest.service';
 
 @Component({
   selector: 'app-generate-review',

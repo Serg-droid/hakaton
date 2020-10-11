@@ -1,6 +1,6 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {ReviewMeta} from '../shared/interfaces';
-import {RestService} from '../shared/rest.service';
+import {ReviewMeta} from '../_shared/interfaces';
+import {RestService} from '../_shared/rest.service';
 import {DOCUMENT} from '@angular/common';
 
 @Component({

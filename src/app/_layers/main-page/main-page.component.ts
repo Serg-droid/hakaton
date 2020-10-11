@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {LazyLoadingScriptsService} from '../../shared/lazy-loading-scripts.service';
+import {LazyLoadingScriptsService} from '../../_shared/lazy-loading-scripts.service';
 
 @Component({
   selector: 'app-main-page',

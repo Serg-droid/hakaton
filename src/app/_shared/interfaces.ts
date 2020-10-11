@@ -1,3 +1,13 @@
+export interface User {
+  password: string
+  username: string
+}
+
+export interface ServerAuthResponse {
+  expiresIn: string
+  token: string
+}
+
 export interface ReviewMeta {
   name: string
   objectType: string
