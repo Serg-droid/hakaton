@@ -1,0 +1,63 @@
+<div class="allReviews" (scroll)="checkScrollForLoad($event)">
+
+  <table>
+    <thead>
+      <tr>
+        <th>Название отчета</th>
+        <th>Тип объекта</th>
+        <th>Дата добавления</th>
+        <th>Состояние</th>
+        <th>Предполагаемая сложность работ</th>
+        <th>Предполагаемые сроки ремонта</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="let review of reviewsPreview"
+        (click)="chooseReview(review.id)"
+      >
+        <td>{{review.name}}</td>
+        <td>{{review.objectType}}</td>
+        <td>{{review.dateAdded | date}}</td>
+        <td>{{review.condition}}</td>
+        <td>{{review.complexity}}</td>
+        <td>{{review.daysToRecover}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="fullReviewModal" *ngIf="showFullReview">
+  <div class="fullReviewWrapper">
+    <table>
+      <thead>
+      <tr>
+        <th>Название отчета</th>
+        <th>Тип объекта</th>
+        <th>Дата добавления</th>
+        <th>Состояние</th>
+        <th>Предполагаемая сложность работ</th>
+        <th>Предполагаемые сроки ремонта</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr
+        *ngFor="let review of reviewsPreview"
+        (click)="chooseReview(review.id)"
+      >
+        <td>{{review.name}}</td>
+        <td>{{review.objectType}}</td>
+        <td>{{review.dateAdded | date}}</td>
+        <td>{{review.condition}}</td>
+        <td>{{review.complexity}}</td>
+        <td>{{review.daysToRecover}}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="loader" *ngIf="loading"></div>
+
+
+

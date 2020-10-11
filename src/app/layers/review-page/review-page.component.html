@@ -1,0 +1,31 @@
+<div class="reviewPage">
+  <nav class="navbar">
+    <ul class="navbarList">
+      <li
+        class="navbarListItem"
+        routerLink="generate"
+        routerLinkActive="active"
+      >
+        Добавить отчет
+      </li>
+      <li
+        class="navbarListItem"
+        routerLink="all-reviews"
+        routerLinkActive="active"
+      >
+        Просмотреть все заявки
+      </li>
+      <li
+        class="navbarListItem"
+        routerLink="total"
+        routerLinkActive="active"
+      >
+        Сформировать итоговый отчет
+      </li>
+    </ul>
+  </nav>
+
+  <div class="reviewPageContent">
+    <router-outlet></router-outlet>
+  </div>
+</div>

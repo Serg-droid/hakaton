@@ -1,0 +1,45 @@
+<div class="generateReview">
+
+  <div class="headerGenerateReview">
+    <button
+      routerLink="/main"
+    >На главную</button>
+    <button
+      routerLink="/map"
+    >Посмотреть карту</button>
+  </div>
+
+  <div class="formLoadReview">
+    <form
+      (ngSubmit)="onSubmit()"
+      [formGroup]="form"
+    >
+      <label for="fileInput">
+        <span>Выберите файл Excel</span>
+        <span>с расширением .xls или .xlsx</span>
+      </label>
+      <input
+        id="fileInput"
+        type="file"
+        accept=".xls,.xlsx, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
+        formControlName="file"
+        (change)="files = $event.target.files"
+      >
+
+      <button
+        type="submit"
+        class="generateReviewSubmit"
+        [disabled]="form.invalid || submitted"
+        [ngClass]="submitted || form.invalid ? '' : 'active'"
+      >
+        Отправить
+      </button>
+    </form>
+  </div>
+
+  <div class="footerGenerateReview">
+
+  </div>
+
+</div>
+
