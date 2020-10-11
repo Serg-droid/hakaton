@@ -1,6 +1,6 @@
 export interface User {
   password: string
-  username: string
+  login: string
 }
 
 export interface ServerAuthResponse {

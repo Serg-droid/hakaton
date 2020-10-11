@@ -1,3 +1,70 @@
 <div class="authForm">
-  <form></form>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+
+    <h1>{{showLoginForm ? 'Вход в систему' : 'Регистрация'}}</h1>
+
+    <div class="inputBlock">
+      <label for="login">Логин</label>
+      <input
+        type="text"
+        id="login"
+        formControlName="login"
+        [ngClass]="{
+          'invalid': form.get('login').invalid
+        && form.get('login').touched
+        }"
+      >
+      <span
+        class="helper-text"
+        *ngIf="form.get('login').invalid && form.get('login').touched"
+      >
+        <span *ngIf="form.get('login').errors['required']">Логин не должен быть пустым</span>
+      </span>
+
+    </div>
+
+    <div class="inputBlock">
+      <label for="password">Пароль</label>
+      <input
+        type="text"
+        id="password"
+        formControlName="password"
+        [ngClass]="{
+          'invalid': form.get('password').invalid
+        && form.get('password').touched
+        }"
+      >
+      <span
+        class="helper-text"
+        *ngIf="form.get('password').invalid && form.get('password').touched"
+      >
+        <span *ngIf="form.get('password').errors['required']">Пароль не должен быть пустым</span>
+        <span *ngIf="form.get('password').errors['minlength']"
+        >
+          Минимальная длина пароля - {{form.get('password').errors['minlength']['requiredLength']}}.
+          Вы ввели {{form.get('password').errors['minlength']['actualLength']}} символов
+        </span>
+      </span>
+    </div>
+
+    <div class="formButtons">
+      <button
+        type="submit"
+        class="submit"
+        [disabled]="form.invalid || submitted"
+      >
+        {{showLoginForm ? 'Войти' : 'Подтвердить'}}
+      </button>
+
+      <button
+        class="change"
+        type="button"
+        (click)="showLoginForm = !showLoginForm; form.reset()"
+      >
+        {{showLoginForm ? 'Регистрация' : 'Авторизация'}}
+      </button>
+    </div>
+
+  </form>
 </div>
+

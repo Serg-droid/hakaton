@@ -24,11 +24,11 @@ export class AuthService {
   }
 
   register(user: User): Observable<User> {
-    return this.http.post<User>('/api/auth/register', user)
+    return this.http.post<User>(`${environment.apiUrl}/api/auth/register`, user)
   }
 
   login(user: User): Observable<ServerAuthResponse> {
-    return this.http.post<ServerAuthResponse>(`${environment.apiUrl}/users/auth/login`, user)
+    return this.http.post<ServerAuthResponse>(`${environment.apiUrl}/api/auth/login`, user)
       .pipe(
         tap(this.setToken),
         catchError(this.handleError.bind(this))
@@ -57,7 +57,7 @@ export class AuthService {
   }
 
   private setToken(response: ServerAuthResponse | null) {
-    if(response) {
+    if(response && response.token && response.expiresIn) {
       const expDate = new Date(new Date().getTime() + +response.expiresIn * 1000)
       localStorage.setItem('token', response.token)
       localStorage.setItem('token-exp', String(expDate))

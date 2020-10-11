@@ -8,6 +8,10 @@ import * as L from 'leaflet'
 })
 export class MapPageComponent implements OnInit, AfterViewInit {
 
+  animation = {
+    mapOptionsOpened: false
+  }
+
   constructor() { }
 
   ngOnInit(): void {
@@ -27,5 +31,6 @@ export class MapPageComponent implements OnInit, AfterViewInit {
       map.panInsideBounds(bounds, { animate: false });
     });
   }
+
 
 }
