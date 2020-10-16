@@ -42,26 +42,24 @@ export class AuthFormComponent implements OnInit {
     }
 
     if(this.showLoginForm) {
-      console.log('login')
       this.auth.login(user).subscribe(
         response => {
-          console.log(response)
           this.submitted = false
           this.router.navigate(['/main'])
         },
         error => {
+          console.log(error)
           this.submitted = false
         }
       )
     } else {
-      console.log('register')
       this.auth.register(user).subscribe(
         response => {
-          console.log(response)
           this.submitted = false
           this.router.navigate(['/main'])
         },
         error => {
+          console.log(error)
           this.submitted = false
         }
       )

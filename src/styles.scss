@@ -29,6 +29,10 @@ ul {
 li {
   list-style: none;
 }
+a {
+  text-decoration: none;
+  color: #000;
+}
 button {
   padding: 0;
   margin: 0;
@@ -40,6 +44,11 @@ button {
 @media (max-width: 1000px) {
   html {
     font-size: 8px;
+  }
+}
+@media (max-width: 600px) {
+  html {
+    font-size: 6px;
   }
 }
 
@@ -103,4 +112,6 @@ button {
     height: 5em;
   }
 }
+
+
 

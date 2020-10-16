@@ -23,8 +23,12 @@ export class AuthService {
     return localStorage.getItem('token')
   }
 
-  register(user: User): Observable<User> {
-    return this.http.post<User>(`${environment.apiUrl}/api/auth/register`, user)
+  register(user: User): Observable<ServerAuthResponse> {
+    return this.http.post<ServerAuthResponse>(`${environment.apiUrl}/api/auth/register`, user)
+      .pipe(
+        tap(this.setToken),
+        catchError(this.handleError.bind(this))
+      )
   }
 
   login(user: User): Observable<ServerAuthResponse> {
@@ -36,13 +40,15 @@ export class AuthService {
   }
 
   private handleError(error: HttpErrorResponse) {
-    const message = error.error.message
+    if (error.error) {
+      const message = error.error.message
 
-    switch(message) {
-      case 'LOGIN_NOT_FOUND':
-        this.error$.next('Пользователь с таким логином не найден')
-      case 'PASSWORD_INVALID':
-        this.error$.next('Неверный пароль')
+      switch(message) {
+        case 'LOGIN_NOT_FOUND':
+          this.error$.next('Пользователь с таким логином не найден')
+        case 'PASSWORD_INVALID':
+          this.error$.next('Неверный пароль')
+      }
     }
 
     return throwError(error)

@@ -11,10 +11,10 @@ import { GenerateReviewComponent } from './generate-review/generate-review.compo
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import { AllReviewsComponent } from './all-reviews/all-reviews.component';
-import { AuthPageComponent } from './_layers/auth-page/auth-page.component';
 import { AuthFormComponent } from './auth-form/auth-form.component';
 import {AuthInterceptor} from './_helpers/auth.interceptor';
 import {fakeBackendProvider} from './_helpers/fake-backend';
+import { MainLinksComponent } from './main-links/main-links.component';
 
 const INTERCEPTOR_PROVIDER: Provider = {
   provide: HTTP_INTERCEPTORS,
@@ -31,8 +31,8 @@ const INTERCEPTOR_PROVIDER: Provider = {
     TotalReviewComponent,
     GenerateReviewComponent,
     AllReviewsComponent,
-    AuthPageComponent,
-    AuthFormComponent
+    AuthFormComponent,
+    MainLinksComponent
   ],
   imports: [
     BrowserModule,

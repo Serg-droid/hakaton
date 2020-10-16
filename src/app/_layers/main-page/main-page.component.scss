@@ -1,83 +1,108 @@
 .mainPage {
-  height: 100%;
   width: 100%;
+  height: 100%;
+  background-color: gray;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
 }
-.mainPageTitle {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  h1 {
-    font-size: 5rem;
-    font-family: "Roboto Light";
-    text-align: center;
-    color: #000;
+.mainPageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.logo {
+  img {
+    width: 200px;
+  }
+}
+.organizators {
+  img {
+    width: 140px;
+    &:not(:last-child) {
+      margin-right: 30px;
+    }
   }
 }
 .mainPageContent {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex: 1;
+  div {
+    flex: 1;
+  }
 }
-.ball {
-  width: 300px;
-  height: 300px;
-  border-radius: 50%;
-  border: 5px solid transparent;
+.leftBlock {
+  padding: 10px;
+  h1 {
+    text-align: center;
+    margin-bottom: 45px;
+    color: #fff;
+    font-size: 4rem;
+  }
   display: flex;
-  justify-content: center;
   align-items: center;
-  cursor: pointer;
-  span {
-    font-size: 2.5rem;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid transparent;
-    transition: all .4s;
-  }
+  justify-content: center;
 }
-.ball:hover {
-  span {
-    font-weight: 600;
-    font-size: 3.5rem;
-    box-shadow: 0 0 10px antiquewhite;
-  }
+.leftBlockImages {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.seeVizualization {
-  background-color: dimgrey;
-  border-color: aliceblue;
-  margin-left: 100px;
-  &:hover {
-    span {
-      border-color: aliceblue;
-    }
-  }
+.tlogoImg {
+  width: 250px;
+  margin-right: 10px;
 }
-.seeReports {
-  background-color: aliceblue;
-  border-color: dimgrey;
-  &:hover {
-    span {
-      border-color: dimgrey;
-    }
-  }
+.coatImg {
+  width: 150px;
 }
 
-@media (max-width: 1000px) {
-  .ball {
+@media (max-width: 1010px) {
+  .mainPageHeader {
+    flex-direction: column;
+  }
+  .logo {
+    margin-bottom: 20px;
+  }
+  .mainPageContent {
+    flex-direction: column;
+  }
+  .leftBlock {
+    h1 {
+      padding: 0 15% 0;
+    }
+    margin-bottom: 20px;
+  }
+  .tlogoImg {
     width: 200px;
-    height: 200px;
+  }
+  .coatImg {
+    width: 125px;
   }
 }
 
-@media (max-width: 620px) {
-  .seeVizualization {
-    margin-left: 70px;
+@media (max-width: 600px) {
+  .mainPage {
+    overflow-y: scroll;
+  }
+  .organizators {
+    img {
+      width: 90px;
+      &:not(:last-child) {
+        margin-right: 10px;
+      }
+    }
+  }
+  .logo {
+    img {
+      width: 180px;
+    }
+  }
+  .tlogoImg {
+    width: 150px;
+  }
+  .coatImg {
+    width: 90px;
   }
 }
 

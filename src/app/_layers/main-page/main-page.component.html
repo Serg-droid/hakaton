@@ -1,20 +1,26 @@
 <div class="mainPage">
-  <div class="mainPageTitle">
-    <h1>Интерактивная карта <br> Благоустройства города Москвы</h1>
-  </div>
-  <div
-    class="mainPageContent"
-    routerLink="/review"
-  >
-    <div class="seeReports ball">
-      <span>Отчеты</span>
+  <div class="mainPageHeader">
+    <div class="logo">
+      <img src="./assets/images/logo/logo.svg">
     </div>
-
-    <div
-      class="seeVizualization ball"
-      routerLink="/map"
-    >
-      <span>Карта</span>
+    <div class="organizators">
+      <img src="./assets/images/logo/dit.svg">
+      <img src="./assets/images/logo/dpi.svg">
+      <img src="./assets/images/logo/aim.svg">
+    </div>
+  </div>
+  <div class="mainPageContent">
+    <div class="leftBlock">
+      <div>
+        <h1>Интерактивная карта комплексного благоустройства города Москвы</h1>
+        <div class="leftBlockImages">
+          <img class="tlogoImg" src="./assets/images/logo/tlogo1.png">
+          <img class="coatImg" src="./assets/images/logo/CoatOfArmsOfMoscow.svg">
+        </div>
+      </div>
+    </div>
+    <div class="routerWrapper">
+      <router-outlet></router-outlet>
     </div>
   </div>
 </div>

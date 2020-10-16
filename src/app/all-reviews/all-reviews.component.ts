@@ -1,7 +1,6 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ReviewMeta} from '../_shared/interfaces';
 import {RestService} from '../_shared/rest.service';
-import {DOCUMENT} from '@angular/common';
 
 @Component({
   selector: 'app-all-reviews',
