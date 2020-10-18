@@ -47,9 +47,9 @@ $buttonHeight: 60px;
 }
 .mapOptionsWrapper {
   position: absolute;
-  width: 300px;
-  height: 300px;
-  top: -300px;
+  width: 350px;
+  height: 350px;
+  top: -350px;
   perspective: 500px;
   background-color: rgba(#a5a2a2, .8);
 }
@@ -61,7 +61,6 @@ $buttonHeight: 60px;
   left: 0;
   transform-style: preserve-3d;
   transition: all 1.5s;
-  //background-color: rgba(#a5a2a2, .8);
 }
 .rotated {
   transform: rotateY(180deg);
@@ -78,14 +77,53 @@ $buttonHeight: 60px;
 }
 .back {
   transform: rotateY(180deg);
-  //background-color: #7d3030;
 }
-.legendImage1, legendImage2 {
+.legendBlock {
+  width: 100%;
+  margin-top: 10px;
+}
+.legendCaptions {
+  display: flex;
+  flex-basis: 25%;
+  font-weight: 600;
+  font-size: 14px;
+  padding-top: 5px;
+}
+.legendImage1, .legendImage2 {
+  background-image: url("/assets/images/map/markers.png");
   background-repeat: no-repeat;
-  background-size: 100%;
+  background-size: 90%;
   width: 100%;
   height: 70px;
 }
 .legendImage1 {
-  background-image: url("/assets/images/map/markers.png");
+  background-position: 5px 0;
+}
+.legendBlockBottom {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  & > span {
+    margin: 0 20px;
+    width: 30%;
+    height: 80px;
+    background-image: url("/assets/images/map/markers.png");
+    background-repeat: no-repeat;
+    background-size: 475px;
+    background-position: -10px -600px;
+  }
+  & > span:nth-child(2) {
+    background-position: -130px -600px;
+  }
+  & > span:nth-child(3) {
+    background-position: -245px -600px;
+  }
+  & > span:nth-child(4) {
+    background-position: -357px -600px;
+    margin: 0 10px;
+    width: 35%;
+  }
+}
+.mapOptions h5 {
+  color: #2f2f2f;
 }

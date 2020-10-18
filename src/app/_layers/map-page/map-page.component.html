@@ -14,13 +14,21 @@
       <div class="mapOptions card" (click)="rotateCard($event)">
         <div class="front side legend">
           <h5>Легенда карты</h5>
-          <div class="legendImage1">
+          <div class="legendBlock">
+            <div class="legendImage1"></div>
+            <div class="legendCaptions">
+              <span>Все "ОК"</span>
+              <span>Обратить внимание</span>
+              <span>Требуется ремонт</span>
+              <span>Аварийная сиутация</span>
+            </div>
+          </div>
+          <div class="legendBlock legendBlockBottom">
             <span></span>
             <span></span>
             <span></span>
             <span></span>
           </div>
-          <div class="legendImage2"></div>
         </div>
         <div class="back side optionControllers">
           <p>Some text</p>
