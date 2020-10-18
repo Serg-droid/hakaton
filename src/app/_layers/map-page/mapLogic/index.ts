@@ -1,39 +1,4 @@
-import Map, {getInfoFromServer} from './Map';
-const map = new Map()
-map.init()
 
-getInfoFromServer('whatToGet', (response) => {
-  map.add(response).setInto('claster')
-  map.objects['claster'].listen('click', (e) => {
-    map.objects['claster'].changeState({
-      style: {
-
-      },
-
-    })
-  })
-
-  map.objects['claster'].listen('drop', (e) => {
-    map.objects['claster'].changeState({
-      style: {
-
-      },
-
-    })
-  })
-
-  map.objects.forEach(obj => obj.changeState({
-
-  }))
-
-  map.objects.forEach(obj => obj.listen('sthg', (e) => {
-
-  }))
-})
-
-getInfoFromServer('anotherThingToGet', (response) => {
-
-})
 
 //   (url, {q: regionName, format: "json", polygon_geojson: 1})
 //     .then(function (data) {

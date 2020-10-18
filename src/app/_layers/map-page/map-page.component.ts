@@ -2,6 +2,8 @@ import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {MapLoadService} from './helpers/map-load.service';
 import {MapDriverService} from './helpers/map-driver.service';
 import {map} from 'rxjs/operators'
+import {capitalize, chooseColor, chooseMarker} from './helpers/utils';
+import {initMap} from './helpers/mapLogic';
 
 @Component({
   selector: 'app-map-page',
@@ -30,59 +32,8 @@ export class MapPageComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit() {
     this.ymaps.ready(() => {
-      this.map = new this.ymaps.Map('map', {
-        center: [55.755826,37.61730],
-        zoom: 10,
-        controls: ['typeSelector', 'geolocationControl', 'zoomControl'],
-      }, {
-        minZoom: 9,
-        restrictMapArea: [[54.9, 36.3], [56.2, 38.8]],
-        suppressMapOpenBlock: true
+      initMap.call(this)
     })
-
-    this.load.getDistricts()
-      .pipe(
-        map(this.driver.driverForDistricts.bind(this))
-      )
-      .subscribe((districts: []) => {
-        this.districts = districts
-        this.showDistricts(districts)
-      })
-
-      const cityList = new this.ymaps.control.ListBox({
-        data: {
-          content: 'Выберите режим отображения',
-          image: '/assets/images/map/icons/list.png'
-        },
-        items: [
-          new this.ymaps.control.ListBoxItem({
-            data: {
-              content: 'Границы районов'
-            },
-            state: {
-              selected: true
-            }
-          }),
-          new this.ymaps.control.ListBoxItem('Метки'),
-        ],
-        options: {
-          maxWidth: [100, 160, 185]
-        }
-      });
-      const select1 = cityList.get(0),
-            select2 = cityList.get(1)
-      select1.events.add('select', () => {
-        select2.deselect()
-        this.showDistricts(this.districts)
-      });
-      select2.events.add('select', () => {
-        select1.deselect()
-        this.showPlacemarks()
-      });
-      this.map.controls.add(cityList);
-
-  })
-
   }
 
   showDistricts(districts: []) {
@@ -117,11 +68,6 @@ export class MapPageComponent implements OnInit, AfterViewInit {
       this.placemarksCluster.removeAll()
     }
 
-    const placemarkColors = [
-      '#DB425A', '#4C4DA2', '#00DEAD', '#D73AD2',
-      '#F8CC4D', '#F88D00', '#AC646C', '#548FB7'
-    ]
-
     this.placemarksCluster = new this.ymaps.Clusterer({
         // Макет метки кластера pieChart.
         clusterIconLayout: 'default#pieChart',
@@ -132,7 +78,8 @@ export class MapPageComponent implements OnInit, AfterViewInit {
         // Ширина линий-разделителей секторов и внешней обводки диаграммы.
         clusterIconPieChartStrokeWidth: 3,
         // Определяет наличие поля balloon.
-        hasBalloon: false
+        hasHint: false,
+        clusterDisableClickZoom: true
       })
 
     const geoObjects = [];
@@ -141,11 +88,14 @@ export class MapPageComponent implements OnInit, AfterViewInit {
       .subscribe(points => {
 
         for (let i = 0, len = points.length; i < len; i++) {
-          geoObjects[i] = new this.ymaps.Placemark(points[i], {}, {
+          geoObjects[i] = new this.ymaps.Placemark(points[i].coordinates, {
+            clusterCaption: capitalize(points[i].type),
+          }, {
             iconLayout: 'default#image',
-            iconImageHref: '/assets/images/map/markers/border-yellow.png',
-            iconImageSize: [37.8, 52],
-            iconImageOffset: [-18.9, -50]
+            iconImageHref: `/assets/images/map/markers/${chooseMarker(points[i])}.png`,
+            iconImageSize: [32, 48],
+            iconImageOffset: [-16, -48],
+            iconColor: chooseColor(points[i])
           });
         }
 
@@ -159,16 +109,20 @@ export class MapPageComponent implements OnInit, AfterViewInit {
         this.map.geoObjects.add(this.placemarksCluster)
     })
 
-    function getRandomColor() {
-      return placemarkColors[Math.floor(Math.random() * placemarkColors.length)];
-    }
-
   }
 
 
+  toggleOptions(event) {
+    if(event.target.closest('.mapOptionsWrapper')) {
+      return
+    }
+    this.animation.mapOptionsOpened = !this.animation.mapOptionsOpened
+  }
 
-
-
+  rotateCard(e) {
+    const target = e.target.closest('.card')
+    target.classList.toggle('rotated')
+  }
 
 }
 
