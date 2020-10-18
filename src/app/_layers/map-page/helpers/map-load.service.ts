@@ -12,4 +12,8 @@ export class MapLoadService {
   getDistricts(): Observable<any> {
     return this.http.get('/assets/data/districts.json')
   }
+
+  getPlaces(): Observable<any> {
+    return this.http.get('/assets/data/places.json')
+  }
 }

@@ -16,8 +16,9 @@ export class MapPageComponent implements OnInit, AfterViewInit {
   ymaps = window['ymaps']
   map
   districts: []
+  placemarks: []
   districtsManager
-  placemarksManager
+  placemarksCluster
 
   constructor(
     private load: MapLoadService,
@@ -34,7 +35,7 @@ export class MapPageComponent implements OnInit, AfterViewInit {
         zoom: 10,
         controls: ['typeSelector', 'geolocationControl', 'zoomControl'],
       }, {
-        minZoom: 10,
+        minZoom: 9,
         restrictMapArea: [[54.9, 36.3], [56.2, 38.8]],
         suppressMapOpenBlock: true
     })
@@ -50,12 +51,23 @@ export class MapPageComponent implements OnInit, AfterViewInit {
 
       const cityList = new this.ymaps.control.ListBox({
         data: {
-          content: 'Выберите режим отображения'
+          content: 'Выберите режим отображения',
+          image: '/assets/images/map/icons/list.png'
         },
         items: [
-          new this.ymaps.control.ListBoxItem('Границы районов'),
+          new this.ymaps.control.ListBoxItem({
+            data: {
+              content: 'Границы районов'
+            },
+            state: {
+              selected: true
+            }
+          }),
           new this.ymaps.control.ListBoxItem('Метки'),
-        ]
+        ],
+        options: {
+          maxWidth: [100, 160, 185]
+        }
       });
       const select1 = cityList.get(0),
             select2 = cityList.get(1)
@@ -74,8 +86,11 @@ export class MapPageComponent implements OnInit, AfterViewInit {
   }
 
   showDistricts(districts: []) {
-    if(this.placemarksManager) {
-      this.placemarksManager.removeAll()
+    if(this.placemarksCluster) {
+      this.placemarksCluster.removeAll()
+    }
+    if(this.districtsManager) {
+      this.districtsManager.removeAll()
     }
 
     this.districtsManager = new this.ymaps.ObjectManager()
@@ -85,7 +100,7 @@ export class MapPageComponent implements OnInit, AfterViewInit {
     this.districtsManager.objects.events.add('mouseenter', (e) => {
       const objectId = e.get('objectId')
       const overlay = this.districtsManager.objects.overlays.getById(objectId)
-      overlay.options.set('opacity', 1)
+      overlay.options.set('opacity', 0.8)
     })
     this.districtsManager.objects.events.add('mouseleave', (e) => {
       const objectId = e.get('objectId')
@@ -98,10 +113,56 @@ export class MapPageComponent implements OnInit, AfterViewInit {
     if(this.districtsManager) {
       this.districtsManager.removeAll()
     }
+    if(this.placemarksCluster) {
+      this.placemarksCluster.removeAll()
+    }
 
-    this.placemarksManager = new this.ymaps.ObjectManager()
+    const placemarkColors = [
+      '#DB425A', '#4C4DA2', '#00DEAD', '#D73AD2',
+      '#F8CC4D', '#F88D00', '#AC646C', '#548FB7'
+    ]
 
-    this.map.geoObjects.add(this.districtsManager)
+    this.placemarksCluster = new this.ymaps.Clusterer({
+        // Макет метки кластера pieChart.
+        clusterIconLayout: 'default#pieChart',
+        // Радиус диаграммы в пикселях.
+        clusterIconPieChartRadius: 25,
+        // Радиус центральной части макета.
+        clusterIconPieChartCoreRadius: 10,
+        // Ширина линий-разделителей секторов и внешней обводки диаграммы.
+        clusterIconPieChartStrokeWidth: 3,
+        // Определяет наличие поля balloon.
+        hasBalloon: false
+      })
+
+    const geoObjects = [];
+
+    this.load.getPlaces()
+      .subscribe(points => {
+
+        for (let i = 0, len = points.length; i < len; i++) {
+          geoObjects[i] = new this.ymaps.Placemark(points[i], {}, {
+            iconLayout: 'default#image',
+            iconImageHref: '/assets/images/map/markers/border-yellow.png',
+            iconImageSize: [37.8, 52],
+            iconImageOffset: [-18.9, -50]
+          });
+        }
+
+        this.placemarksCluster.add(geoObjects);
+        this.map.geoObjects.add(this.placemarksCluster);
+
+        this.map.setBounds(this.placemarksCluster.getBounds(), {
+          checkZoomRange: true
+        });
+
+        this.map.geoObjects.add(this.placemarksCluster)
+    })
+
+    function getRandomColor() {
+      return placemarkColors[Math.floor(Math.random() * placemarkColors.length)];
+    }
+
   }
 
 
