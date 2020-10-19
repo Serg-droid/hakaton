@@ -1,19 +1,20 @@
 import { Injectable } from '@angular/core';
 import {capitalize, chooseColor, chooseMarker} from './utils';
-import {Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MapDriverService {
 
+  districtsLoaded: boolean
+  pointsLoaded: boolean
   constructor() { }
 
   // вариант создания инстансов
   // const districts = this.driver.driverForDistricts(data)
   // this.districtsManager = new this.ymaps.ObjectManager()
   // this.districtsManager.add(districts)
-  driverForDistricts(districts): any {
+  driverForDistricts(districts, options): any {
     const geoJSON = {
       "type": "FeatureCollection",
       features: []
@@ -34,13 +35,17 @@ export class MapDriverService {
         obj.coordinates = district.polygons.coordinates
       }
 
+      const balloonContentLayoutFactory = options.balloonContentLayoutFactory
+        ? options.balloonContentLayoutFactory
+        : ''
+
       acc.push({
         type: 'Feature',
         id: index,
         geometry: obj,
         properties: {
-          "balloonContentHeader": district.name,
-          "balloonContentBody": 'dwdwwwddwwddww',
+          // "balloonContentHeader": district.name,
+          // "balloonContentBody": balloonContentLayout,
           "clusterCaption": "Метка 1",
           "hintContent": "Текст подсказки",
           "myDescription": "Произвольное описание",
@@ -48,12 +53,14 @@ export class MapDriverService {
         options: {
           fillColor: Math.floor(Math.random() * 2) === 1 ? '#d06364' : '#80d063',
           opacity: 0.4,
-          strokeOpacity: 0.7
+          strokeOpacity: 0.7,
+          balloonContentLayout: balloonContentLayoutFactory(district.name),
         }
       })
       return acc
     }, [])
 
+    this.districtsLoaded = true
     return geoJSON
   }
 
@@ -70,39 +77,14 @@ export class MapDriverService {
         type: 'Point',
         coordinates: point.coordinates
       }
-      // const object = [
-      //   {
-      //     geometry: {
-      //       type: 'Point',
-      //       coordinates: point.coordinates
-      //     },
-      //     properties: {
-      //       iconContent: '',
-      //       iconCaption: '',
-      //       hintContent: '',
-      //       balloonContent: '',
-      //       balloonContentHeader: '',
-      //       balloonContentBody: '',
-      //       balloonContentFooter: '',
-      //       clusterCaption: capitalize(point.type),
-      //     }
-      //   },
-      //   {
-      //     iconLayout: 'default#image',
-      //     iconImageHref: `/assets/images/map/markers/${chooseMarker(point)}.png`,
-      //     iconImageSize: [32, 48],
-      //     iconImageOffset: [-16, -48],
-      //     iconColor: chooseColor(point)
-      //   }
-      // ]
 
       geoJSON.features.push({
         type: 'Feature',
         id: index,
         geometry: object,
         properties: {
-          "balloonContent": point.type,
-          "clusterCaption": "Метка 1",
+          "balloonContent": 'keke',
+          "clusterCaption": capitalize(point.type),
           "hintContent": "Текст подсказки",
           "myDescription": "Произвольное описание",
         },
@@ -115,6 +97,8 @@ export class MapDriverService {
         }
       })
     }
+
+    this.pointsLoaded = true
     return geoJSON
   }
 }

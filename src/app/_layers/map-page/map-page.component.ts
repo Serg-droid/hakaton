@@ -19,6 +19,7 @@ export class MapPageComponent implements OnInit, AfterViewInit {
   points: any[]
   districtsManager
   pointsManager
+  districtBalloonOpened
 
   constructor(
     private load: MapLoadService,
@@ -41,66 +42,87 @@ export class MapPageComponent implements OnInit, AfterViewInit {
           suppressMapOpenBlock: true
         })
 
+        // создание шаблона layout для балунов районов
+        const balloonContentLayoutFactory = (districtName) => {
+          const balloonContentLayout = this.ymaps.templateLayoutFactory.createClass(
+            `<h3>${districtName}</h3>
+             <button id="#show-places-button">Показать метки в этом районе</button>`,
+            {
+              build: function() {
+                balloonContentLayout.superclass.build.call(this);
+                document.getElementById('#show-places-button').addEventListener('click', this.myButtonClick);
+              },
+              clear: function() {
+                document.getElementById('#show-places-button').removeEventListener('click', this.myButtonClick);
+                balloonContentLayout.superclass.clear.call(this);
+              },
+              myButtonClick: this.showPlacesIntoDistrict
+            }
+          )
+          return balloonContentLayout
+        }
+
         // загрузка и отображение районов
         this.load.getDistricts()
           .pipe(
-            map(this.driver.driverForDistricts)
+            map((districts) => this.driver.driverForDistricts(districts, {
+              balloonContentLayoutFactory
+            }))
           )
           .subscribe((districts: []) => {
             this.districts = districts
             this.showDistricts(districts)
           })
 
-        // добавление контроллеров
-        const cityList = new this.ymaps.control.ListBox({
-          data: {
-            content: 'Выберите режим отображения',
-            image: '/assets/images/map/icons/list.png'
-          },
-          items: [
-            new this.ymaps.control.ListBoxItem({
-              data: {
-                content: 'Границы районов'
-              },
-              state: {
-                selected: true
-              }
-            }),
-            new this.ymaps.control.ListBoxItem('Метки'),
-          ],
-          options: {
-            maxWidth: [100, 160, 185]
-          }
-        });
-
-        const select1 = cityList.get(0),
-              select2 = cityList.get(1)
-
-        select1.events.add('select', () => {
-          select2.deselect()
-          this.showDistricts(this.districts)
-        });
-        select2.events.add('select', () => {
-          select1.deselect()
-          this.showPlacemarks()
-        });
-
-        this.map.controls.add(cityList);
+        this.addControllers()
       })
   }
 
-  showDistricts(districts: any[]) {
-      if(this.pointsManager) {
-        this.pointsManager.removeAll()
-      }
-      if(this.districtsManager) {
-        this.districtsManager.removeAll()
-      }
+  addControllers() {
+      const cityList = new this.ymaps.control.ListBox({
+        data: {
+          content: 'Выберите режим отображения',
+          image: '/assets/images/map/icons/list.png'
+        },
+        items: [
+          new this.ymaps.control.ListBoxItem({
+            data: {
+              content: 'Границы районов'
+            },
+            state: {
+              selected: true
+            }
+          }),
+          new this.ymaps.control.ListBoxItem('Метки'),
+        ],
+        options: {
+          maxWidth: [100, 160, 185]
+        }
+      });
 
+      const select1 = cityList.get(0),
+        select2 = cityList.get(1)
+
+      select1.events.add('select', () => {
+        select2.deselect()
+        this.showDistricts()
+      });
+      select2.events.add('select', () => {
+        select1.deselect()
+        this.showPoints()
+      });
+
+      this.map.controls.add(cityList);
+  }
+
+  setDistrictsManager(districts: any[]) {
       this.districtsManager = new this.ymaps.ObjectManager()
       this.districtsManager.add(districts)
-      this.map.geoObjects.add(this.districtsManager)
 
+      this.districtsManager.objects.events.add('balloonopen', (e) => {
+        const objectId = e.get('objectId')
+        this.districtBalloonOpened = this.districtsManager.objects.getById(objectId);
+      })
       this.districtsManager.objects.events.add('mouseenter', (e) => {
         const objectId = e.get('objectId')
         const overlay = this.districtsManager.objects.overlays.getById(objectId)
@@ -113,42 +135,72 @@ export class MapPageComponent implements OnInit, AfterViewInit {
       })
   }
 
-  showPlacemarks() {
-      if(this.districtsManager) {
-        this.districtsManager.removeAll()
-      }
-      if(this.pointsManager) {
-        this.pointsManager.removeAll()
-      }
+  setPointsManager(points) {
+      this.pointsManager = new this.ymaps.ObjectManager({
+        clusterize: true,
+        // Макет метки кластера pieChart.
+        clusterIconLayout: 'default#pieChart',
+        // Радиус диаграммы в пикселях.
+        clusterIconPieChartRadius: 25,
+        // Радиус центральной части макета.
+        clusterIconPieChartCoreRadius: 10,
+        // Ширина линий-разделителей секторов и внешней обводки диаграммы.
+        clusterIconPieChartStrokeWidth: 3,
+        // Определяет наличие поля balloon.
+        hasHint: false,
+        clusterDisableClickZoom: true
+      })
 
-      this.load.getPlaces()
+      this.pointsManager.add(points)
+      this.map.geoObjects.add(this.pointsManager)
+      this.map.setBounds(this.pointsManager.getBounds(), {
+        checkZoomRange: true
+      });
+  }
+
+  tuner() {
+
+  }
+
+  showDistricts() {
+      this.map.geoObjects.removeAll()
+      this.map.geoObjects.add(this.districtsManager)
+  }
+
+  showPoints() {
+      this.map.geoObjects.removeAll()
+      this.map.geoObjects.add(this.pointsManager)
+    this.load.getPlaces()
         .pipe(
           map(this.driver.driverForPoints)
         )
         .subscribe(points => {
 
           this.points = points
-          this.pointsManager = new this.ymaps.ObjectManager({
-            clusterize: true,
-            // Макет метки кластера pieChart.
-            clusterIconLayout: 'default#pieChart',
-            // Радиус диаграммы в пикселях.
-            clusterIconPieChartRadius: 25,
-            // Радиус центральной части макета.
-            clusterIconPieChartCoreRadius: 10,
-            // Ширина линий-разделителей секторов и внешней обводки диаграммы.
-            clusterIconPieChartStrokeWidth: 3,
-            // Определяет наличие поля balloon.
-            hasHint: false,
-            clusterDisableClickZoom: true
-          })
 
-          this.pointsManager.add(points)
-          this.map.geoObjects.add(this.pointsManager)
-          this.map.setBounds(this.pointsManager.getBounds(), {
-            checkZoomRange: true
-          });
       })
+  }
+
+  showPlacesIntoDistrict = () => {
+    console.log(this.districtBalloonOpened)
+    // this.map.setBounds(this.districtBalloonOpened.getBounds(), {
+    //   checkZoomRange: true
+    // })
+    const districtObject = new this.ymaps.GeoObject(this.districtBalloonOpened)
+    this.map.geoObjects.add(districtObject)
+    if(!this.points) {
+      this.load.getPlaces()
+        .pipe(
+          map(this.driver.driverForPoints)
+        )
+        .subscribe(points => {
+          this.points = points
+          const geoQueryResult = this.ymaps.geoQuery(points)
+          const objectsInsideDistrict = geoQueryResult.searchInside(districtObject)
+          console.log(objectsInsideDistrict)
+          objectsInsideDistrict.addToMap(this.map)
+        })
+    }
   }
 
 
